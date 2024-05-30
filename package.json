@@ -1,0 +1,21 @@
+{
+  "name": "backend-aplikasi-peminjaman-buku",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js",
+    "migrate": "npx prisma migrate dev --name init"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.2",
+    "prisma": "^5.14.0"
+  }
+}
