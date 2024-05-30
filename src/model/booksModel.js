@@ -1,6 +1,6 @@
 import prisma from "../config/database.js";
 
-const findBookByName = (bookName) => {
+const getBookByName = (bookName) => {
   return prisma.book.findUnique({
     where: { title: bookName },
     include: { borrowedBy: true },
@@ -36,5 +36,5 @@ const borrow = (book, member) => {
   });
 };
 
-const booksModel = { findBookByName, borrow };
+const booksModel = { getBookByName, borrow };
 export default booksModel;

@@ -24,7 +24,7 @@ const borrow = async (req, res) => {
     }
 
     // 2). validate book
-    const book = booksModel.findBookByName(bookName);
+    const book = booksModel.getBookByName(bookName);
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
