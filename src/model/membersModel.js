@@ -1,8 +1,9 @@
 import prisma from "../config/database.js";
 
-const getMemberByName = (memberName) => {
+const getMemberByName = (member) => {
+  const { name, code } = member;
   return prisma.member.findUnique({
-    where: { name: memberName },
+    where: { name, code },
     include: { borrowedBooks: true },
   });
 };
