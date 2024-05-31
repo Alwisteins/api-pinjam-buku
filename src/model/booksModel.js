@@ -7,7 +7,7 @@ const getBookByName = (bookName) => {
   });
 };
 
-const borrow = (book, member) => {
+const borrowBook = (book, member) => {
   return prisma.$transaction(async (trx) => {
     // 1) update book, change the stock & borrowedBy
     const updatedBook = await trx.book.update({
@@ -36,5 +36,5 @@ const borrow = (book, member) => {
   });
 };
 
-const booksModel = { getBookByName, borrow };
+const booksModel = { getBookByName, borrowBook };
 export default booksModel;

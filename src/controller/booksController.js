@@ -1,7 +1,7 @@
 import booksModel from "../model/booksModel.js";
 import membersModel from "../model/membersModel.js";
 
-const borrow = async (req, res) => {
+const borrowBook = async (req, res) => {
   try {
     const { bookName, member } = req.body;
 
@@ -35,7 +35,7 @@ const borrow = async (req, res) => {
     }
 
     // 4). perform borrow transaction
-    const data = await booksModel.borrow(book, isMemberExist);
+    const data = await booksModel.borrowBook(book, isMemberExist);
 
     res.status(200).json({ message: "Successfully borrowed a book", data });
   } catch (err) {
@@ -44,5 +44,5 @@ const borrow = async (req, res) => {
   }
 };
 
-const booksController = { borrow };
+const booksController = { borrowBook };
 export default booksController;
