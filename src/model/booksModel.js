@@ -55,9 +55,23 @@ const returnBook = async (isMemberExist, isBookExist) => {
       data: { stock: { increment: 1 } },
     });
 
+    // 4) Check if book is returned after more than 7 days
+    const oneWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+    const isMemberPenalty =
+      new Date() - new Date(borrowedBook.borrowedAt) <= oneWeekInMilliseconds;
+
+    // 5) Update member with penalty if book is returned late
+    const penaltyEndDate = !isMemberPenalty
+      ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days from now
+      : null;
+
     // get the updated member
-    const updatedMember = await trx.member.findUnique({
+    const updatedMember = await trx.member.update({
       where: { code: isMemberExist.code },
+      data: {
+        penalty: !isMemberPenalty,
+        penaltyEndDate: penaltyEndDate,
+      },
       include: { borrowedBooks: true },
     });
 
