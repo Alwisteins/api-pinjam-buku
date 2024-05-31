@@ -8,5 +8,9 @@ const getMemberByName = (member) => {
   });
 };
 
-const membersModel = { getMemberByName };
+const updateMemberByName = (name, data) => {
+  return prisma.member.update({ where: { name }, data });
+};
+
+const membersModel = { getMemberByName, updateMemberByName };
 export default membersModel;
