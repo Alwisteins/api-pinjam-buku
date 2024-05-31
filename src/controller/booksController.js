@@ -114,7 +114,7 @@ const getAvailableBooks = async (req, res) => {
       return (total += item.stock);
     }, 0);
     if (availableBooks.length === 0) {
-      return res.status(404).json({ message: "there's no books to show" });
+      return res.status(404).json({ message: "there's no books available" });
     }
 
     const data = { availableBooks, totalBooksAvailable };
