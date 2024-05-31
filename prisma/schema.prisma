@@ -32,8 +32,8 @@ model Member {
 model BorrowedBook {
   id         Int      @id @default(autoincrement())
   borrowedAt DateTime
-  book       Book     @relation(fields: [bookCode], references: [code])
+  book       Book     @relation(fields: [bookCode], references: [code], onDelete: Cascade)
   bookCode   String
-  member     Member   @relation(fields: [memberCode], references: [code])
+  member     Member   @relation(fields: [memberCode], references: [code], onDelete: Cascade)
   memberCode String
 }

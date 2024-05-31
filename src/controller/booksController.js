@@ -69,21 +69,23 @@ const returnBook = async (req, res) => {
 
     const borrowedBooks = isMemberExist.borrowedBooks;
 
-    // validate return book name
-    const isReturnedBookValid = borrowedBooks.filter((book) => {
-      book.bookCode == isBookExist.code;
-    });
-    if (!isReturnedBookValid) {
+    // Validate return book name
+    const isReturnedBookValid = borrowedBooks.filter(
+      (book) => book.bookCode === isBookExist.code
+    );
+
+    if (isReturnedBookValid.length === 0) {
       return res
         .status(404)
         .json({ message: "Please return the borrowed books correctly" });
     }
 
     // validate return deadline
-    const isBookReturnedInAWeek = (borrowedAt) => {
-      const oneWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-      return new Date() - new Date(borrowedAt) <= oneWeekInMilliseconds;
-    };
+    const oneWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+    const isBookReturnedInAWeek =
+      new Date() - new Date(borrowedBooks[0].borrowedAt) <=
+      oneWeekInMilliseconds;
+
     if (!isBookReturnedInAWeek) {
       await membersModel.updateMemberByName(member.name, { pinalty: true });
     }

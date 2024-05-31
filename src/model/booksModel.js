@@ -36,24 +36,30 @@ const borrowBook = (book, member) => {
   });
 };
 
-const returnBook = (isMemberExist, isBookExist) => {
+const returnBook = async (isMemberExist, isBookExist) => {
   return prisma.$transaction(async (trx) => {
-    // 1) update book, change the stock
-    const updatedBook = await trx.book.update({
-      where: { title: isBookExist.tite },
-      data: { stock: { increment: 1 } },
-    });
-
-    // 2) update member, change the borrowedBooks
-    const updatedMember = await trx.member.update({
-      where: { name: isMemberExist.name },
-      data: {
-        borrowedBooks: { disconnect: { bookCode: isBookExist.code } },
+    // 1) Get the borrowed book entry
+    const borrowedBook = await trx.borrowedBook.findFirst({
+      where: {
+        bookCode: isBookExist.code,
+        memberCode: isMemberExist.code,
       },
     });
 
-    // 3) delete borrowed book record
-    await trx.borrowedBook.delete({ where: { bookCode: isBookExist.code } });
+    // 2) Delete the borrowed book record
+    await trx.borrowedBook.delete({ where: { id: borrowedBook.id } });
+
+    // 3) Update book, increment the stock
+    const updatedBook = await trx.book.update({
+      where: { title: isBookExist.title },
+      data: { stock: { increment: 1 } },
+    });
+
+    // get the updated member
+    const updatedMember = await trx.member.findUnique({
+      where: { code: isMemberExist.code },
+      include: { borrowedBooks: true },
+    });
 
     return { updatedBook, updatedMember };
   });
