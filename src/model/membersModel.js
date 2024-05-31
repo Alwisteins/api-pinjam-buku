@@ -8,9 +8,13 @@ const getMemberByName = (member) => {
   });
 };
 
+const getAllMembers = () => {
+  return prisma.member.findMany({ include: { borrowedBooks: true } });
+};
+
 const updateMemberByName = (name, data) => {
   return prisma.member.update({ where: { name }, data });
 };
 
-const membersModel = { getMemberByName, updateMemberByName };
+const membersModel = { getMemberByName, getAllMembers, updateMemberByName };
 export default membersModel;
