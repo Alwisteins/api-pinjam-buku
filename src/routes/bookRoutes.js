@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get("/borrow", booksController.borrowBook);
 router.post("/return", booksController.returnBook);
+router.get("/list", booksController.getAvailableBooks);
 
 export default router;

@@ -98,13 +98,35 @@ const returnBook = async (req, res) => {
           message: "You will be penalized for returning books more than 7 days",
           data,
         })
-      : res.status(200).json({ message: "Book has been successfully returned", data });
+      : res
+          .status(200)
+          .json({ message: "Book has been successfully returned", data });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Error on server side" });
   }
 };
 
+const getAvailableBooks = async (req, res) => {
+  try {
+    const availableBooks = await booksModel.getAvailableBooks();
+    const totalBooksAvailable = availableBooks.reduce((total, item) => {
+      return (total += item.stock);
+    }, 0);
+    if (availableBooks.length === 0) {
+      return res.status(404).json({ message: "there's no books to show" });
+    }
 
-const booksController = { borrowBook, returnBook };
+    const data = { availableBooks, totalBooksAvailable };
+
+    return res
+      .status(200)
+      .json({ message: "successfully get all books list", data });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Error on server side" });
+  }
+};
+
+const booksController = { borrowBook, returnBook, getAvailableBooks };
 export default booksController;

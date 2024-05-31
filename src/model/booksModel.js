@@ -79,5 +79,9 @@ const returnBook = async (isMemberExist, isBookExist) => {
   });
 };
 
-const booksModel = { getBookByName, borrowBook, returnBook };
+const getAvailableBooks = () => {
+  return prisma.book.findMany({ where: { stock: { gte: 0 } } });
+};
+
+const booksModel = { getBookByName, borrowBook, returnBook, getAvailableBooks };
 export default booksModel;
