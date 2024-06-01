@@ -9,20 +9,20 @@ const getBookByName = (bookName) => {
 
 const borrowBook = (book, member) => {
   return prisma.$transaction(async (trx) => {
-    // 1) update book, change the stock & borrowedBy
-    const updatedBook = await trx.book.update({
-      where: { title: book.title },
-      data: { stock: { decrement: 1 } },
-      include: { borrowedBy: true },
-    });
-
-    // 2) create borrowed book entry
+    // 1) create borrowed book entry
     const borrowedBook = await trx.borrowedBook.create({
       data: {
         borrowedAt: new Date(),
         book: { connect: { code: book.code } },
         member: { connect: { code: member.code } },
       },
+    });
+
+    // 2) update book, change the stock & borrowedBy
+    const updatedBook = await trx.book.update({
+      where: { title: book.title },
+      data: { stock: { decrement: 1 } },
+      include: { borrowedBy: true },
     });
 
     // 3) update member, change the borrowedBooks
@@ -53,6 +53,7 @@ const returnBook = async (isMemberExist, isBookExist) => {
     const updatedBook = await trx.book.update({
       where: { title: isBookExist.title },
       data: { stock: { increment: 1 } },
+      include: { borrowedBy: true },
     });
 
     // 4) Check if book is returned after more than 7 days
